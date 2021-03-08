@@ -69,7 +69,7 @@ digraph G {
     label = "Guardian";
   }
 
-  Ape -> "DAI yVault"  [color=blue] [label="deposit"];
+  Ape [image="https://raw.githubusercontent.com/miguel567/yearn-diagrams/master/icons/4814337391579070428-512.png"] -> "DAI yVault"  [color=blue] [label="deposit"];
   "DAI yVault" -> Ape  [color=red] [label="withdraw"];
   "DAI yVault" -> "genericLevCompFarm" [color=blue] [label="Deposit DAI"]
   "genericLevCompFarm" -> "DAI yVault" [color=red] [label="Withdraw DAI"]
