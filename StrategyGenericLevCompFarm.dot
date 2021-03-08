@@ -1,0 +1,95 @@
+digraph G {
+
+  subgraph cluster_cream {
+    style=filled;
+    color=lightgrey;
+    node [style=filled,color=white,shape=box];
+    "Iron Bank";
+    "cyDAI";
+    "Oracle";
+    label = "Cream V2 - Protocol to Protocol Lender";
+  }
+
+  subgraph cluster_governance{
+    style=filled;
+    color=lightgrey;
+    node [style=filled,color=white,shape=box];
+    "Multisig";
+    "YFI Voting";
+    label = "Governance - YFI Voting system";
+  }
+
+  subgraph cluster_flashloan_provider{
+    style=filled;
+    color=lightgrey;
+    node [style=filled,color=white,shape=box];
+    "Aave";
+    "dy/dx";
+    label = "Flashloans Providers";
+  }
+
+  subgraph cluster_compound{
+    style=filled;
+    color=lightgrey;
+    node [style=filled,color=white,shape=box];
+    "Comptroller";
+    "cdai";
+    label = "Compound Finance";
+  }
+
+  subgraph cluster_strategist{
+    style=filled;
+    color=lightgrey;
+    node [style=filled,color=white,shape=box];
+    "Brain"
+    label = "Strategist";
+  }
+
+  subgraph cluster_keeper{
+    style=filled;
+    color=lightgrey;
+    node [style=filled,color=white,shape=box];
+    "Keeper Job"
+    label = "Keeper Network";
+  }
+
+  subgraph cluster_treasury{
+    style=filled;
+    color=lightgrey;
+    node [style=filled,color=white,shape=box];
+    "Money Bag"
+    label = "Yearn Treasury";
+  }
+
+  subgraph cluster_guardian{
+    style=filled;
+    color=lightgrey;
+    node [style=filled,color=white,shape=box];
+    "Police"
+    label = "Guardian";
+  }
+
+  Ape -> "DAI yVault"  [color=blue] [label="deposit"];
+  "DAI yVault" -> Ape  [color=red] [label="withdraw"];
+  "DAI yVault" -> "genericLevCompFarm" [color=blue] [label="Deposit DAI"]
+  "genericLevCompFarm" -> "DAI yVault" [color=red] [label="Withdraw DAI"]
+  "Iron Bank" -> "genericLevCompFarm" [color=blue] [label="Borrow at 0 collateral"] [ltail=cluster_cream]
+  "genericLevCompFarm" -> "Iron Bank" [color=red] [label="Repay"] [lhead=cluster_cream]
+  "DAI yVault" -> "redeem cDAI for DAI" -> "Lend DAO from Vault + DAI from Flashloan" -> "Comptroller" [lhead=cluster_compound]
+  "Comptroller" -> "repay debt using DAI borrowed from flashloan" -> "Strategy borrows DAI  to pay-off Flashloan" -> "cDai+COMP" -> "genericLevCompFarm" [ltail=cluster_compound]
+  "Multisig" -> "DAI yVault" [label="Manage Valut"]
+  "genericLevCompFarm" -> "Multisig" [label="Manage Strategy"]
+
+  "Comptroller" -> "genericLevCompFarm" [ltail=cluster_compound]
+  "Keeper Job" -> "genericLevCompFarm" [ltail=cluster_keeper] [label="Regularly calls Harvest() in exchange for some fee"]
+  "Brain" -> "genericLevCompFarm" [ltail=cluster_strategist] [label="Creates, monitors and manages strategy in exchange for Performance Fee."]
+  "DAI yVault" -> "Money Bag" [lhead=cluster_treasury] [label="Management & Performance Fees are collected."]
+  "Police" -> "DAI yVault" [ltail=cluster_guardian] [label="Ensures safety of vaults"]
+  "genericLevCompFarm" -> "UniswapV2Router02"  [label="Swap COMP for DAI and reinvest in strategy"] [lhead=cluster_cream]
+
+
+
+  compound=true;
+  Ape [shape=Mdiamond];
+
+}
