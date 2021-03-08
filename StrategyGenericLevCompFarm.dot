@@ -79,6 +79,8 @@ digraph G {
   "Comptroller" -> "repay debt using DAI borrowed from flashloan" -> "Strategy borrows DAI  to pay-off Flashloan" -> "cDai+COMP" -> "genericLevCompFarm" [ltail=cluster_compound]
   "Multisig" -> "DAI yVault" [label="Manage Valut"]
   "genericLevCompFarm" -> "Multisig" [label="Manage Strategy"]
+  "Aave" -> "genericLevCompFarm" [ltail=cluster_flashloan_provider] [label="Borrow DAI to lend/repay to Compound"]
+  "genericLevCompFarm" -> "Aave" [lhead=cluster_flashloan_provider] [label="Repay DAI from Compound borrow"]
 
   "Comptroller" -> "genericLevCompFarm" [ltail=cluster_compound]
   "Keeper Job" -> "genericLevCompFarm" [ltail=cluster_keeper] [label="Regularly calls Harvest() in exchange for some fee"]
